@@ -1,9 +1,15 @@
-﻿using LunaStore.Domain.Interfaces;
+﻿using LunaStore.Application.Interfaces;
+using LunaStore.Application.Mappings;
+using LunaStore.Application.Services;
+using LunaStore.Domain.Interfaces;
 using LunaStore.Infra.Data.Context;
 using LunaStore.Infra.Data.Repositories;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+
 
 
 namespace LunaStore.Infra.IoC
@@ -18,6 +24,15 @@ namespace LunaStore.Infra.IoC
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
+
+            services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
+            services.AddAutoMapper(typeof(DTOToCommandMappingProfile));
+
+            var myHandlers = AppDomain.CurrentDomain.Load("LunaStore.Application");
+            services.AddMediatR(myHandlers);
 
             return services;
 
