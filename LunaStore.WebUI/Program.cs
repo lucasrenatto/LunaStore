@@ -1,3 +1,4 @@
+using LunaStore.Domain.Account;
 using LunaStore.Infra.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.Use(async (context, next) =>
+{
+    // Obtém uma instância de ISeedUserRoleInitial dentro do escopo de uma solicitação HTTP
+    var seedUser = context.RequestServices.GetRequiredService<ISeedUserRoleInitial>();
+    seedUser.SeedRoles();
+    seedUser.SeedUsers();
+
+    await next();
+});
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
