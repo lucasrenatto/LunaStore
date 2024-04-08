@@ -32,7 +32,7 @@ namespace LunaStore.Infra.IoC
             services.AddAutoMapper(typeof(DTOToCommandMappingProfile));
 
             var myHandlers = AppDomain.CurrentDomain.Load("LunaStore.Application");
-            services.AddMediatR(myHandlers);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 
             return services;
 
